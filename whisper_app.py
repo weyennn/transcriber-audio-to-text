@@ -421,6 +421,24 @@ uploaded_files = st.file_uploader(
 
 if uploaded_files:
     st.markdown("<br>", unsafe_allow_html=True)
+
+    # Audio preview — shown immediately after upload
+    for uploaded_file in uploaded_files:
+        st.markdown(
+            f'<div class="file-header">/ <span>{uploaded_file.name}</span></div>',
+            unsafe_allow_html=True,
+        )
+        st.audio(uploaded_file)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    n = len(uploaded_files)
+    st.markdown(
+        f'<p style="color:#b0b8cc;font-size:0.8rem;margin-bottom:0.6rem;'
+        f'font-family:\'IBM Plex Mono\',monospace;">'
+        f'{n} file{"s" if n > 1 else ""} ready · select model and language in the sidebar</p>',
+        unsafe_allow_html=True,
+    )
     run_btn = st.button("Transcribe", use_container_width=True)
 
     if run_btn:
@@ -429,6 +447,7 @@ if uploaded_files:
         st.success(f"Model **{model_size}** ready on {device.upper()}")
 
         for uploaded_file in uploaded_files:
+            st.markdown("---")
             st.markdown(
                 f'<div class="file-header">/ <span>{uploaded_file.name}</span></div>',
                 unsafe_allow_html=True,
@@ -436,7 +455,7 @@ if uploaded_files:
 
             suffix = Path(uploaded_file.name).suffix
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-                tmp.write(uploaded_file.read())
+                tmp.write(uploaded_file.getvalue())
                 tmp_path = tmp.name
 
             try:
@@ -446,7 +465,7 @@ if uploaded_files:
                 if task:
                     options["task"] = task
 
-                with st.spinner("Transcribing…"):
+                with st.spinner(f"Transcribing {uploaded_file.name}…"):
                     result = model.transcribe(tmp_path, **options)
 
                 detected_lang = result.get("language", "unknown")
@@ -461,13 +480,22 @@ if uploaded_files:
                     for seg in result.get("segments", [])
                 ]
 
+                word_count = len(text.split())
+                char_count = len(text)
+                duration   = segments[-1]["end"] if segments else 0
+
+                st.markdown(
+                    f'<span class="info-pill">detected: <span>{detected_lang.upper()}</span></span>'
+                    f'<span class="info-pill">words: <span>{word_count:,}</span></span>'
+                    f'<span class="info-pill">chars: <span>{char_count:,}</span></span>'
+                    f'<span class="info-pill">segments: <span>{len(segments)}</span></span>'
+                    f'<span class="info-pill">duration: <span>{format_time(duration)}</span></span>',
+                    unsafe_allow_html=True,
+                )
+
                 tab1, tab2, tab3 = st.tabs(["Transcript", "Segments", "Export"])
 
                 with tab1:
-                    st.markdown(
-                        f'<span class="info-pill">detected: <span>{detected_lang.upper()}</span></span>',
-                        unsafe_allow_html=True,
-                    )
                     st.markdown(
                         f'<div class="transcript-box">{text}</div>',
                         unsafe_allow_html=True,
@@ -529,8 +557,11 @@ if uploaded_files:
                             use_container_width=True,
                         )
 
+            except Exception as e:
+                st.error(f"Failed to transcribe **{uploaded_file.name}**: {e}")
             finally:
-                os.unlink(tmp_path)
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
 
 else:
     st.markdown(
