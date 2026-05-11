@@ -26,7 +26,22 @@ Web app transkripsi audio berbasis [OpenAI Whisper](https://github.com/openai/wh
 | **turbo** | ███       | ████    | ~6 GB  |
 | large     | ▪         | █████   | ~10 GB |
 
-Rekomendasi: **turbo** — keseimbangan terbaik antara kecepatan dan akurasi.
+Rekomendasi: **turbo** — keseimbangan terbaik antara kecepatan dan akurasi (lokal/GPU).  
+Untuk **Streamlit Cloud**: gunakan `tiny` atau `base` — free tier hanya punya ~1 GB RAM.
+
+---
+
+## Deploy ke Streamlit Cloud
+
+1. Fork atau push repo ini ke GitHub
+2. Buka [share.streamlit.io](https://share.streamlit.io) → **New app**
+3. Pilih repo, branch `main`, file `whisper_app.py`
+4. Klik **Deploy**
+
+`ffmpeg` akan diinstall otomatis oleh Streamlit Cloud via `packages.txt`.
+
+> **Catatan:** Gunakan model **tiny** atau **base** di Streamlit Cloud.  
+> Model yang lebih besar (small, medium, turbo, large) akan crash karena keterbatasan RAM free tier.
 
 ---
 

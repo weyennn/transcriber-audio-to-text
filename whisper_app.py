@@ -368,9 +368,17 @@ with st.sidebar:
     model_size = st.selectbox(
         "Model",
         ["tiny", "base", "small", "medium", "turbo", "large"],
-        index=4,
-        help="turbo = recommended — fast + accurate",
+        index=0,
+        help="tiny = recommended untuk Streamlit Cloud. Gunakan medium/turbo/large hanya jika jalan lokal.",
     )
+
+    if model_size in ("small", "medium", "turbo", "large"):
+        st.warning(
+            f"Model **{model_size}** membutuhkan RAM besar. "
+            "Di Streamlit Cloud free tier, kemungkinan besar akan crash. "
+            "Gunakan **tiny** atau **base** untuk cloud deployment.",
+            icon="⚠️",
+        )
 
     language_map = {
         "Auto-detect": None,
@@ -401,13 +409,15 @@ with st.sidebar:
         "large":  (1, 5),
     }
 
+    cloud_safe = {"tiny", "base"}
     rows = ""
     for name, (spd, acc) in model_specs.items():
         active = ' class="active"' if name == model_size else ""
         marker = "→ " if name == model_size else "&nbsp;&nbsp; "
+        cloud_tag = ' <span style="color:#009e82;font-size:0.65rem;">cloud</span>' if name in cloud_safe else ""
         rows += (
             f"<tr{active}>"
-            f"<td>{marker}{name}</td>"
+            f"<td>{marker}{name}{cloud_tag}</td>"
             f"<td>{bars(spd)}</td>"
             f"<td>{bars(acc)}</td>"
             f"</tr>"
