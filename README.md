@@ -1,5 +1,7 @@
 # Whisper Transcriber
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weyennn/transcriber-audio-to-text/blob/main/colab_run.ipynb)
+
 Web app transkripsi audio berbasis [OpenAI Whisper](https://github.com/openai/whisper) dan [Streamlit](https://streamlit.io). Upload file audio, pilih model dan bahasa, dapatkan transkrip dalam format TXT, JSON, atau SRT.
 
 ---
@@ -31,7 +33,18 @@ Untuk **Streamlit Cloud**: gunakan `tiny` atau `base` — free tier hanya punya 
 
 ---
 
-## Deploy ke Streamlit Cloud
+## Cara Menjalankan
+
+### Google Colab (Recommended — GPU gratis)
+
+Klik badge **Open in Colab** di atas, lalu jalankan semua cell dari atas ke bawah.
+App akan dapat diakses via link Cloudflare yang muncul di cell terakhir.
+
+- Aktifkan GPU: *Runtime → Change runtime type → T4 GPU*
+- Semua model bisa dipakai (tiny s.d. large), tergantung RAM sesi Colab
+- Tidak perlu install apapun di laptop
+
+### Streamlit Cloud (Deploy permanen)
 
 1. Fork atau push repo ini ke GitHub
 2. Buka [share.streamlit.io](https://share.streamlit.io) → **New app**
