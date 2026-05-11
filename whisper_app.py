@@ -271,6 +271,51 @@ st.markdown("""
     }
 
     hr { border-color: #e4e7f0 !important; margin: 1.2rem 0; }
+
+    /* Next step card */
+    .next-step {
+        background: #f0fdf8;
+        border: 1px solid #009e8230;
+        border-left: 3px solid #009e82;
+        border-radius: 6px;
+        padding: 0.9rem 1.2rem;
+        margin-top: 1.2rem;
+        font-size: 0.84rem;
+        color: #2d3148;
+        line-height: 1.7;
+    }
+    .next-step .next-title {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #009e82;
+        margin-bottom: 0.35rem;
+    }
+    .next-step code {
+        background: #d6f5ee;
+        border-radius: 3px;
+        padding: 0.1rem 0.4rem;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.8rem;
+        color: #007a65;
+    }
+
+    /* Copy textarea */
+    .stTextArea textarea {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.88rem;
+        line-height: 1.75;
+        background: #ffffff;
+        border: 1px solid #e4e7f0;
+        border-radius: 8px;
+        color: #2d3148;
+        resize: vertical;
+    }
+    .stTextArea textarea:focus {
+        border-color: #009e8260;
+        box-shadow: 0 0 0 2px #009e8215;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -498,6 +543,23 @@ if uploaded_files:
                 with tab1:
                     st.markdown(
                         f'<div class="transcript-box">{text}</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown('<div class="label" style="margin-top:1rem;">Copy-friendly</div>', unsafe_allow_html=True)
+                    st.text_area(
+                        label="copy",
+                        value=text,
+                        height=180,
+                        label_visibility="collapsed",
+                        key=f"copy_{uploaded_file.name}",
+                    )
+                    st.markdown(
+                        '<div class="next-step">'
+                        '<div class="next-title">Next Step</div>'
+                        "Salin teks di atas, lalu lanjutkan dengan AI tool pilihanmu:<br>"
+                        "<code>ChatGPT</code> &nbsp; <code>Claude</code> &nbsp; <code>Gemini</code> &nbsp; <code>Copilot</code><br>"
+                        "Contoh prompt: <em>\"Rapikan transkrip ini, tambahkan tanda baca dan paragraf yang sesuai.\"</em>"
+                        "</div>",
                         unsafe_allow_html=True,
                     )
 
